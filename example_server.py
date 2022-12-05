@@ -15,6 +15,11 @@ def error(route):
     raise RequestError("404 Not Found", "error page")
 
 
+@bottle.route("/echo")
+def echo(route, text=''):
+    return text
+
+
 @bottle.route("/*.*")
 def get_file(route):
     file_path = source_path / Path(route[1:])

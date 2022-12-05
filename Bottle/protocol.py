@@ -20,7 +20,7 @@ class Protocol:
 
         for arg in request:
             key, value = arg.split('=')
-            dct.update({key: value})
+            dct.update({key: value.replace('+', ' ')})
 
         return dct
 

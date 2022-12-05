@@ -38,7 +38,7 @@ class Bottle:
                     try:
                         response, t = result
                     
-                    except TypeError:
+                    except (TypeError, ValueError):
                         response = result
                     
                     response = Protocol.pack(response)
