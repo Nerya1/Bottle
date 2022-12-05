@@ -1,0 +1,2 @@
+class RequestError(BaseException):
+    pass
