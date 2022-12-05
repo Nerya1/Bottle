@@ -21,29 +21,40 @@ class Bottle:
         def decorator(func):
             @wraps(func)
             def wrap(*args, **kwargs):
-                header = "HTTP/1.1 {code} {status}\r\n" \
+                header = "HTTP/1.1 {status}\r\n" \
                          "Connection: keep-alive\r\n" \
                          "Content-Type: {type}\r\n" \
                          "Content-Length: {length}\r\n\r\n"
 
-                code = 200
-                status = 'OK'
+                status = '200 OK'
+                t = 'text/html; charset=utf-8'
 
                 try:
-                    response = func(*args, **kwargs)
+                    result = func(
+                        *args,
+                        **{key: value for key, value in kwargs.items() if key in func.__code__.co_varnames}
+                    )
+                    
+                    try:
+                        response, t = result
+                    
+                    except TypeError:
+                        response = result
+                    
+                    response = Protocol.pack(response)
 
-                except RequestError:
-                    response = 'placeholder'  # TODO: handle RequestError
+                except RequestError as e:
+                    response = e.response.encode()
+                    status = e.status_code
 
                 return (
                     header.format(
-                        code=code,
                         status=status,
-                        type='',
+                        type=t,
                         length=len(response)
-                    ) +
+                    ).encode() +
                     response
-                ).encode()
+                )
 
             self.routes.update({compile(route): wrap})
             return wrap

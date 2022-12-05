@@ -1,3 +1,6 @@
+from Bottle import File
+
+
 class Protocol:
     TIMEOUT = 0.2
 
@@ -48,4 +51,10 @@ class Protocol:
 
     @staticmethod
     def pack(item):
-        return item.encode()
+        match item:
+            case str():
+                return item.encode()
+
+            case File():
+                with open(item.path, 'rb') as file:
+                    return file.read()
