@@ -47,6 +47,10 @@ class Bottle:
                     response = e.response.encode()
                     status = e.status_code
 
+                except TypeError:
+                    response = b'illegal parameter'
+                    status = '403 Forbidden'
+
                 return (
                     header.format(
                         status=status,
